@@ -21,35 +21,27 @@ public class ProgressDialogFragment extends DialogFragment {
 
     private ProgressDialog nDialog;
 
-    public ProgressDialogFragment(BaseActivity activity, String tag) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag("progress");
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-    }
-
     void ProgressDialogFragment() {
         this.setCancelable(false);
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true);
     }
 
-    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
+        ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
+        return dialog;
+    }
 
-
-        nDialog = new ProgressDialog() //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
-        nDialog.setMessage("Loading..");
-        nDialog.setTitle("Checking Network");
-        nDialog.setIndeterminate(false);
-        nDialog.setCancelable(true);
-        nDialog.show();
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+        super.onDestroyView();
     }
 }
